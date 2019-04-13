@@ -1,6 +1,7 @@
 package com.tiagompalte.wsbm.resources;
 
 import com.tiagompalte.wsbm.domain.User;
+import com.tiagompalte.wsbm.dto.PostDTO;
 import com.tiagompalte.wsbm.dto.UserDTO;
 import com.tiagompalte.wsbm.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,4 +60,11 @@ public class UserResource {
         return ResponseEntity.ok(new UserDTO(user));
     }
 
+    @GetMapping(value = "/{id}/posts")
+    public ResponseEntity<List<PostDTO>> findPostByUser(@PathVariable String id) {
+
+        User user = userService.findById(id);
+        List<PostDTO> listPosts = user.getPosts().stream().map(p -> new PostDTO(p)).collect(Collectors.toList());
+        return ResponseEntity.ok(listPosts);
+    }
 }
