@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -17,20 +19,23 @@ public class CommentDTO implements Serializable {
 
     private String id;
 
+    @NotBlank(message = "Texto não informado")
     private String text;
 
     private Date date;
 
+    @NotNull(message = "Autor não informado")
     private UserDTO author;
 
+    @NotNull(message = "Post não informado")
     private PostDTO post;
 
-    public CommentDTO(Comment commet) {
-        id = commet.getId();
-        text = commet.getText();
-        date = commet.getDate();
-        author = new UserDTO(commet.getAuthor());
-        post = new PostDTO(commet.getPost());
+    public CommentDTO(Comment comment) {
+        id = comment.getId();
+        text = comment.getText();
+        date = comment.getDate();
+        author = new UserDTO(comment.getAuthor());
+        post = new PostDTO(comment.getPost());
     }
 
 }

@@ -8,7 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 @RestController
 @RequestMapping(value = "/comments")
@@ -20,16 +23,19 @@ public class CommentResource {
     @GetMapping(value = "/{id}")
     public ResponseEntity<CommentDTO> findById(@PathVariable String id) {
 
-        Comment Comment = commentService.findById(id);
-        return ResponseEntity.ok(new CommentDTO(Comment));
+        Comment comment = commentService.findById(id);
+        return ResponseEntity.ok(new CommentDTO(comment));
     }
 
     @PostMapping()
-    public ResponseEntity<Void> insert(@RequestBody CommentDTO dto) {
+    public ResponseEntity<Void> insert(@RequestBody @Valid CommentDTO dto) {
 
-        Comment Comment = commentService.fromDTO(dto);
-        Comment = commentService.insert(Comment);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(Comment.getId()).toUri();
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+        dto.setDate(calendar.getTime());
+
+        Comment comment = commentService.fromDTO(dto);
+        comment = commentService.insert(comment);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(comment.getId()).toUri();
         return ResponseEntity.created(uri).build();
     }
 
@@ -42,11 +48,11 @@ public class CommentResource {
 
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<CommentDTO> update(@PathVariable String id, @RequestBody CommentDTO dto) {
+    public ResponseEntity<CommentDTO> update(@PathVariable String id, @RequestBody @Valid CommentDTO dto) {
 
-        Comment Comment = commentService.fromDTO(dto);
-        Comment.setId(id);
-        Comment = commentService.update(Comment);
-        return ResponseEntity.ok(new CommentDTO(Comment));
+        dto.setId(id);
+        Comment comment = commentService.fromDTO(dto);
+        comment = commentService.update(comment);
+        return ResponseEntity.ok(new CommentDTO(comment));
     }
 }

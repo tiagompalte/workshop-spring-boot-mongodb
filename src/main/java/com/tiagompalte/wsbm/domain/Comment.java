@@ -8,7 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.io.Serializable;
 import java.util.Date;
 
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,6 +17,7 @@ import java.util.Date;
 public class Comment implements Serializable {
 
     @Id
+    @Setter(value = AccessLevel.PRIVATE)
     @EqualsAndHashCode.Include
     public String id;
 

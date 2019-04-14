@@ -1,35 +1,46 @@
 package com.tiagompalte.wsbm.domain;
 
 import lombok.*;
-import lombok.experimental.FieldNameConstants;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Document(collection = "users")
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @NonNull
+    @Setter(value = AccessLevel.PRIVATE)
     @EqualsAndHashCode.Include
     private String id;
 
-    @NonNull
     private String name;
 
-    @NonNull
+    @Indexed(unique = true)
     private String email;
 
     @DBRef(lazy = true)
     private List<Post> posts;
+
+    public void addPost(Post post) {
+        if(post == null) {
+            return;
+        }
+        if(posts == null) {
+            posts = new ArrayList<>();
+        }
+        posts.add(post);
+    }
 
 }

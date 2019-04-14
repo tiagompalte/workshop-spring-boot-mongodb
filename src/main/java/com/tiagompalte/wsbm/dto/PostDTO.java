@@ -1,9 +1,13 @@
 package com.tiagompalte.wsbm.dto;
 
+import com.tiagompalte.wsbm.domain.Comment;
 import com.tiagompalte.wsbm.domain.Post;
+import com.tiagompalte.wsbm.domain.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -19,10 +23,13 @@ public class PostDTO implements Serializable {
 
     private Date date;
 
+    @NotBlank(message = "Título não informado")
     private String title;
 
+    @NotBlank(message = "Texto não informado")
     private String body;
 
+    @NotNull(message = "Autor não informado")
     private UserDTO author;
 
     private List<CommentDTO> comments;
@@ -33,6 +40,15 @@ public class PostDTO implements Serializable {
         title = post.getTitle();
         body = post.getBody();
         author = new UserDTO(post.getAuthor());
-        comments = post.getListComments().stream().map(c -> new CommentDTO(c)).collect(Collectors.toList());
+        comments = post.getComments().stream().map(c -> convertComment(c)).collect(Collectors.toList());
+    }
+
+    private CommentDTO convertComment(Comment comment) {
+        CommentDTO dto = new CommentDTO();
+        dto.setId(comment.getId());
+        dto.setDate(comment.getDate());
+        dto.setText(comment.getText());
+        dto.setAuthor(new UserDTO(comment.getAuthor()));
+        return dto;
     }
 }
